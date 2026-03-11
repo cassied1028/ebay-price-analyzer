@@ -15,6 +15,7 @@ The app helps determine realistic pricing using:
 * Average prices
 * Min / Max
 * Total price (item + shipping)
+* Sell-through rate
 
 ---
 
@@ -36,8 +37,8 @@ project-root/
 │   └── styles.css             # Static styling
 │
 ├── data/
-│   ├──ebay_sold_results.json # Generated data (ignored in git)
-│   └──ebay_current_results.json # Generated data (ignored in git)
+│   ├── ebay_sold_results.json # Generated data (ignored in git)
+│   └── ebay_current_results.json # Generated data (ignored in git)
 │
 ├── screenshots/               # Puppeteer debug screenshots
 ├── venv/                      # Python virtual environment (ignored)
@@ -52,44 +53,27 @@ project-root/
 
 * Launches a headless Chromium browser
 * Searches eBay for a specified query
-* Filters for:
-
-  * Sold listings
-  * Completed listings
+* Collects both:
+  * sold/completed listings
+  * current active listings
 * Extracts:
-
-  * Title
-  * Item price
-  * Shipping price
+  * title
+  * item price
+  * shipping price
+  * image
 * Saves results to:
 
-```
+```text
 data/ebay_sold_results.json
+data/ebay_current_results.json
 ```
 
-* Saves a screenshot for debugging to:
-```
-screenshots/current_ebay_search.png
-```
+The scraper is triggered automatically by the FastAPI backend when a user submits a search from the dashboard.
 
-* The scraper accepts command line arguments**
-
-```
-node scraper/index.js "search query" sold
-node scraper/index.js "search query" current
-```
-
-Example:
-
-```
-node scraper/index.js "pokemon cards" sold
-node scraper/index.js "pokemon cards" current
-```
-
-You can modify search_number to increase or decrease the listings searched through:
+You can modify the number of listings scraped by changing:
 
 ```js
-const search_number = 50;
+const search_number = 25;
 ```
 
 ---

@@ -34,10 +34,10 @@ async function main() {
         await page.waitForSelector("li.s-card");
 
         // screenshot for debugging
-        await page.screenshot({
-            path: path.join(screenshotsDir, `current_ebay_${mode}_search.png`),
-            fullPage: true
-        });
+        // await page.screenshot({
+        //     path: path.join(screenshotsDir, `current_ebay_${mode}_search.png`),
+        //     fullPage: true
+        // });
 
         //getting data from page
         const data = await page.evaluate((search_number) => {
@@ -82,7 +82,8 @@ async function main() {
                     const title = item.querySelector(".s-card__title .su-styled-text.primary")?.textContent?.trim();
                     return title && title !== "Shop on eBay";
                 })
-                .slice(0, Math.min(search_number, totalListingCount)); const listings = root.map(item => {
+                .slice(0, Math.min(search_number, totalListingCount)); 
+                const listings = root.map(item => {
                     const priceText = item.querySelector(".s-card__price")?.textContent.trim() || null;
 
                     const shippingText =
@@ -120,4 +121,7 @@ async function main() {
     await browser.close();
 }
 
-main();
+main().catch(err => {
+    console.error(err);
+    process.exit(1);
+});

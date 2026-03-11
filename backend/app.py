@@ -6,7 +6,7 @@ from statistics import mean, median
 from typing import Any
 import subprocess
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, Query, Request
 from fastapi import Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -28,7 +28,7 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 def load_listings(mode: str) -> dict[str, Any]:
     data_file = DATA_SOLD_FILE if mode == "sold" else DATA_CURRENT_FILE
     if not data_file.exists():
-        return {"totalListingCount": 0, "listings": []}
+        return {"totalListingCount": 0, "fewerWordsFallback": False, "listings": []}
     return json.loads(data_file.read_text(encoding="utf-8"))
 
 
