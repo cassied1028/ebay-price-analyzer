@@ -36,7 +36,8 @@ project-root/
 │   └── styles.css             # Static styling
 │
 ├── data/
-│   └── ebay_sold_results.json # Generated data (ignored in git)
+│   ├──ebay_sold_results.json # Generated data (ignored in git)
+│   └──ebay_current_results.json # Generated data (ignored in git)
 │
 ├── screenshots/               # Puppeteer debug screenshots
 ├── venv/                      # Python virtual environment (ignored)
@@ -71,10 +72,23 @@ data/ebay_sold_results.json
 screenshots/current_ebay_search.png
 ```
 
-You can modify two variables:
+* The scraper accepts command line arguments**
+
+```
+node scraper/index.js "search query" sold
+node scraper/index.js "search query" current
+```
+
+Example:
+
+```
+node scraper/index.js "pokemon cards" sold
+node scraper/index.js "pokemon cards" current
+```
+
+You can modify search_number to increase or decrease the listings searched through:
 
 ```js
-const query = 'your ebay search';
 const search_number = 50;
 ```
 
@@ -109,7 +123,7 @@ cd project-root
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install fastapi uvicorn jinja2
+pip install fastapi uvicorn jinja2 python-multipart
 ```
 
 ---
@@ -124,15 +138,18 @@ cd ..
 
 ---
 
-### 4️⃣ Run the scraper
+## 🚀 Running
+
+### 1️⃣ Run the scraper with search to update the json files
 
 ```bash
-node scraper/index.js
+node scraper/index.js "query" sold
+node scraper/index.js "query" current
 ```
 
 ---
 
-### 5️⃣ Start the backend server
+### 2️⃣ Start the backend server
 
 ```bash
 uvicorn backend.app:app --reload --port 3000

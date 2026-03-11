@@ -28,7 +28,7 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 def load_listings(mode: str) -> list[dict[str, Any]]:
     data_file = DATA_SOLD_FILE if mode == "sold" else DATA_CURRENT_FILE
     if not data_file.exists():
-        raise HTTPException(status_code=404, detail=f"No {mode} data yet")
+        return []
     return json.loads(data_file.read_text(encoding="utf-8"))
 
 
