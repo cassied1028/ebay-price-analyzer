@@ -162,3 +162,18 @@ td:nth-child(5) {
     display: none;
   }
 }
+
+.summary {
+  text-align: center;
+  margin: 20px 0 30px 0;
+}
+
+.summary h2 {
+  margin: 5px 0 10px 0;
+}
+
+.search-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 0;
+}

@@ -10,14 +10,6 @@
 
     <h1>eBay Sold vs Current Listings</h1>
 
-    <div class="stat">
-      <h3>*Sell Through Rate: {{ sell_through_rate }}%</h3>
-    </div>
-    <div class="stat">
-      <p>Sold Listings (90 days): {{ sold_total }}</p>
-      <p>Active Listings: {{ current_total }}</p>
-    </div>
-
     <!-- Centered Search -->
     <div class="search-container">
       <form method="post" action="/search">
@@ -32,7 +24,11 @@
       </form>
     </div>
    
-    
+
+    <!-- <div class="current-search">
+      <p><strong>Current Search:</strong> {{ current_query }}</p>
+    </div> -->
+
     {% if sold_fewer_words or current_fewer_words %}
     <div class="warning">
       <br>
@@ -41,11 +37,23 @@
       <br>
     </div>
     {% endif %}
-    
 
-    <div class="stat">
-      <h1>Current Search: {{current_query}}</h1>
+    <!-- <div class="stat">
+      <h3>*Sell-Through Rate: {{ sell_through_rate }}%</h3>
+      <p>Sold Listings (90 days): {{ sold_total }}</p>
+      <p>Active Listings: {{ current_total }}</p>
+    </div> -->
+
+    <div class="summary">
+      <p class="search-label">Current Search</p>
+      <h2>{{ current_query }}</h2>
+
+      <h3>Sell-Through Rate: {{ sell_through_rate }}%*</h3>
+
+      <p>Sold Listings (90 days): {{ sold_total }}</p>
+      <p>Active Listings: {{ current_total }}</p>
     </div>
+        
     <!-- Split Layout -->
     <div class="split-container">
 
