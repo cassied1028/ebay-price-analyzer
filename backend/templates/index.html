@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>eBay Comparison</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+
+  <body>
+
+    <h1>eBay Sold vs Current Listings</h1>
+
+    <!-- Centered Search -->
+    <div class="search-container">
+      <form method="post" action="/search">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search eBay listings…"
+          style="width: 420px;"
+          required
+        />
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+    <!-- Split Layout -->
+    <div class="split-container">
+
+      <!-- SOLD PANEL -->
+      <div class="panel">
+        <h2>Sold Listings</h2>
+
+        <div class="stats">
+          <p><strong>Total Listings:</strong> {{ sold_stats.listings_count }}</p>
+
+          <h4>Item Price</h4>
+          <p>Median: ${{ "%.2f"|format(sold_stats.item.median or 0) }}</p>
+          <p>Average: ${{ "%.2f"|format(sold_stats.item.mean or 0) }}</p>
+
+          <h4>Total Price (Item + Shipping)</h4>
+          <p>Median: ${{ "%.2f"|format(sold_stats.total.median or 0) }}</p>
+          <p>Average: ${{ "%.2f"|format(sold_stats.total.mean or 0) }}</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Item</th>
+              <th>Ship</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in sold_listings %}
+            <tr>
+              <td>
+                {% if item.Image %}
+                  <img src="{{ item.Image }}" alt="{{ item.Title }}" style="width:70px;" />
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>{{ item.Title }}</td>
+              <td>${{ "%.2f"|format(item.ItemPrice) }}</td>
+              <td>${{ "%.2f"|format(item.ShippingPrice) }}</td>
+              <td>${{ "%.2f"|format(item.ItemPrice + item.ShippingPrice) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- CURRENT PANEL -->
+      <div class="panel">
+        <h2>Current Listings</h2>
+
+        <div class="stats">
+          <p><strong>Total Listings:</strong> {{ current_stats.listings_count }}</p>
+
+          <h4>Item Price</h4>
+          <p>Median: ${{ "%.2f"|format(current_stats.item.median or 0) }}</p>
+          <p>Average: ${{ "%.2f"|format(current_stats.item.mean or 0) }}</p>
+
+          <h4>Total Price (Item + Shipping)</h4>
+          <p>Median: ${{ "%.2f"|format(current_stats.total.median or 0) }}</p>
+          <p>Average: ${{ "%.2f"|format(current_stats.total.mean or 0) }}</p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Item</th>
+              <th>Ship</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in current_listings %}
+            <tr>
+              <td>
+                {% if item.Image %}
+                  <img src="{{ item.Image }}" alt="{{ item.Title }}" style="width:70px;" />
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>{{ item.Title }}</td>
+              <td>${{ "%.2f"|format(item.ItemPrice) }}</td>
+              <td>${{ "%.2f"|format(item.ShippingPrice) }}</td>
+              <td>${{ "%.2f"|format(item.ItemPrice + item.ShippingPrice) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </body>
+</html>

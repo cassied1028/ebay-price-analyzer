@@ -1,0 +1,45 @@
+# ==============================
+# Python
+# ==============================
+
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+
+# ==============================
+# Node (Scraper)
+# ==============================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Puppeteer Chromium cache
+.puppeteer/
+
+# ==============================
+# Generated Data (keep folders)
+# ==============================
+
+data/*
+screenshots/*
+
+!data/.gitkeep
+!screenshots/.gitkeep
+
+# ==============================
+# OS / System Files
+# ==============================
+
+.DS_Store
+Thumbs.db
+
+# ==============================
+# VS Code (optional)
+# ==============================
+
+.vscode/
