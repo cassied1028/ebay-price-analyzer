@@ -33,6 +33,7 @@ async function main() {
         await page.goto(url, { waitUntil: 'domcontentloaded' });
         await page.waitForSelector("li.s-card");
 
+        // screenshot for debugging
         await page.screenshot({
             path: path.join(screenshotsDir, `current_ebay_${mode}_search.png`),
             fullPage: true
@@ -53,7 +54,7 @@ async function main() {
                 /results matching fewer words/i.test(pageText) ||
                 /no exact matches found/i.test(pageText);
 
-            if (fewerWordsFallback || totalListingCount === 0) {
+            if (totalListingCount === 0) {
                 return {
                     totalListingCount: 0,
                     fewerWordsFallback,
@@ -73,32 +74,35 @@ async function main() {
 
                 if (lower.includes("free")) return 0;
 
-                // covers things like "+$4.99 shipping", "$12.00 delivery", etc.
                 return parseMoney(text);
             };
 
-            const root = Array.from(document.querySelectorAll("li.s-card")).slice(2, search_number + 2);
-            const listings = root.map(item => {
-                const priceText = item.querySelector(".s-card__price")?.textContent.trim() || null;
+            const root = Array.from(document.querySelectorAll("li.s-card"))
+                .filter(item => {
+                    const title = item.querySelector(".s-card__title .su-styled-text.primary")?.textContent?.trim();
+                    return title && title !== "Shop on eBay";
+                })
+                .slice(0, Math.min(search_number, totalListingCount)); const listings = root.map(item => {
+                    const priceText = item.querySelector(".s-card__price")?.textContent.trim() || null;
 
-                const shippingText =
-                    Array.from(item.querySelectorAll(".s-card__attribute-row span"))
-                        .map(el => el.textContent.trim())
-                        .find(t => /(shipping|delivery)/i.test(t) || /^free\b/i.test(t)) ||
-                    "Not listed";
+                    const shippingText =
+                        Array.from(item.querySelectorAll(".s-card__attribute-row span"))
+                            .map(el => el.textContent.trim())
+                            .find(t => /(shipping|delivery)/i.test(t) || /^free\b/i.test(t)) ||
+                        "Not listed";
 
-                return ({
-                    Title: item.querySelector(".s-card__title .su-styled-text.primary")?.textContent.trim(),
-                    Price: priceText,
-                    Shipping: shippingText,
-                    Image: item.querySelector("img.s-card__image")?.getAttribute("src") || null,
-                    ItemPrice: parseMoney(priceText),
-                    ShippingPrice: shippingText === "Not listed" ? null : parseShipping(shippingText),
-                });
-            })
-                .filter(item => item.Title && item.Title !== "Shop on eBay");
+                    return ({
+                        Title: item.querySelector(".s-card__title .su-styled-text.primary")?.textContent.trim(),
+                        Price: priceText,
+                        Shipping: shippingText,
+                        Image: item.querySelector("img.s-card__image")?.getAttribute("src") || null,
+                        ItemPrice: parseMoney(priceText),
+                        ShippingPrice: shippingText === "Not listed" ? null : parseShipping(shippingText),
+                    });
+                })
+                    .filter(item => item.Title && item.Title !== "Shop on eBay");
 
-            return { totalListingCount,fewerWordsFallback, listings };
+            return { totalListingCount, fewerWordsFallback, listings };
         }, search_number);
 
         const filename =
