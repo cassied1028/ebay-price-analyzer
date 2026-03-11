@@ -11,7 +11,7 @@ async function main() {
     //what to enter into search bar 
     const query = process.argv.slice(2).join(" ") || "hot wheels";
     //the max amount of items to look at, starts at top of search pages
-    const search_number = 50;
+    const search_number = 25;
     //////////////////////////////////
 
     const baseUrl =
@@ -40,6 +40,26 @@ async function main() {
 
         //getting data from page
         const data = await page.evaluate((search_number) => {
+
+            const totalListingCount = parseInt(
+                document.querySelector(".srp-controls__count-heading span")
+                    ?.textContent
+                    ?.replace(/,/g, "") || 0
+            );
+
+            const pageText = document.body.textContent || "";
+
+            const fewerWordsFallback =
+                /results matching fewer words/i.test(pageText) ||
+                /no exact matches found/i.test(pageText);
+
+            if (fewerWordsFallback || totalListingCount === 0) {
+                return {
+                    totalListingCount: 0,
+                    fewerWordsFallback,
+                    listings: []
+                };
+            }
 
             const parseMoney = (text) => {
                 if (!text) return null;
@@ -76,9 +96,9 @@ async function main() {
                     ShippingPrice: shippingText === "Not listed" ? null : parseShipping(shippingText),
                 });
             })
-            .filter(item => item.Title && item.Title !== "Shop on eBay");
+                .filter(item => item.Title && item.Title !== "Shop on eBay");
 
-            return listings;
+            return { totalListingCount,fewerWordsFallback, listings };
         }, search_number);
 
         const filename =

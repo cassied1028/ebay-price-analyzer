@@ -25,10 +25,10 @@ app.mount("/static", StaticFiles(directory=str(WEB_DIR)), name="static")
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
-def load_listings(mode: str) -> list[dict[str, Any]]:
+def load_listings(mode: str) -> dict[str, Any]:
     data_file = DATA_SOLD_FILE if mode == "sold" else DATA_CURRENT_FILE
     if not data_file.exists():
-        return []
+        return {"totalListingCount": 0, "listings": []}
     return json.loads(data_file.read_text(encoding="utf-8"))
 
 
@@ -74,11 +74,26 @@ def clean_listings(listings: list[dict[str, Any]], limit: int | None):
 
 @app.get("/")
 def homepage(request: Request, limit: int | None = Query(default=None, gt=0)):
-    sold_raw = load_listings("sold")
-    current_raw = load_listings("current")
+    sold_data = load_listings("sold")
+    current_data = load_listings("current")
+
+    sold_total = sold_data["totalListingCount"]
+    current_total = current_data["totalListingCount"]
+
+    sold_raw = sold_data["listings"]
+    current_raw = current_data["listings"]
 
     sold_cleaned, sold_stats = clean_listings(sold_raw, limit)
     current_cleaned, current_stats = clean_listings(current_raw, limit)
+
+    sold_fewer_words = sold_data.get("fewerWordsFallback", False)
+    current_fewer_words = current_data.get("fewerWordsFallback", False)
+
+    sell_through_rate = None
+    if current_total > 0:
+        sell_through_rate = round((sold_total / current_total) * 100, 2)
+
+    current_query = request.query_params.get("q", "")
 
     return templates.TemplateResponse(
         "index.html",
@@ -88,6 +103,13 @@ def homepage(request: Request, limit: int | None = Query(default=None, gt=0)):
             "sold_stats": sold_stats,
             "current_listings": current_cleaned,
             "current_stats": current_stats,
+            "sell_through_rate": sell_through_rate,
+            "sold_total": sold_total,
+            "current_total": current_total,
+            "sold_fewer_words":sold_fewer_words,
+            "current_fewer_words":current_fewer_words,
+            "current_query":current_query,
+
         },
     )
 
@@ -95,9 +117,5 @@ def homepage(request: Request, limit: int | None = Query(default=None, gt=0)):
 @app.post("/search")
 def run_search(q: str = Form(...)):
     scraper = str(ROOT / "scraper" / "index.js")
-
-    # IMPORTANT: this assumes your index.js supports a final arg: "sold" or "current"
-    subprocess.run(["node", scraper, q, "sold"], check=True)
-    subprocess.run(["node", scraper, q, "current"], check=True)
-
-    return RedirectResponse(url="/", status_code=303)
+    subprocess.run(["node", scraper, q], check=True)
+    return RedirectResponse(url=f"/?q={q}", status_code=303)

@@ -10,6 +10,14 @@
 
     <h1>eBay Sold vs Current Listings</h1>
 
+    <div class="stat">
+      <h3>*Sell Through Rate: {{ sell_through_rate }}%</h3>
+    </div>
+    <div class="stat">
+      <p>Sold Listings (90 days): {{ sold_total }}</p>
+      <p>Active Listings: {{ current_total }}</p>
+    </div>
+
     <!-- Centered Search -->
     <div class="search-container">
       <form method="post" action="/search">
@@ -23,7 +31,21 @@
         <button type="submit">Search</button>
       </form>
     </div>
+   
+    
+    {% if sold_fewer_words or current_fewer_words %}
+    <div class="warning">
+      <br>
+      ⚠️ eBay is showing results that match fewer words than your search.
+      Some pricing data may not exactly match the query. ⚠️ 
+      <br>
+    </div>
+    {% endif %}
+    
 
+    <div class="stat">
+      <h1>Current Search: {{current_query}}</h1>
+    </div>
     <!-- Split Layout -->
     <div class="split-container">
 
@@ -32,7 +54,7 @@
         <h2>Sold Listings</h2>
 
         <div class="stats">
-          <p><strong>Total Listings:</strong> {{ sold_stats.listings_count }}</p>
+          <p><strong>Listings Searched:</strong> {{ sold_stats.listings_count }}</p>
 
           <h4>Item Price</h4>
           <p>Median: ${{ "%.2f"|format(sold_stats.item.median or 0) }}</p>
@@ -80,7 +102,7 @@
         <h2>Current Listings</h2>
 
         <div class="stats">
-          <p><strong>Total Listings:</strong> {{ current_stats.listings_count }}</p>
+          <p><strong>Listings Searched:</strong> {{ current_stats.listings_count }}</p>
 
           <h4>Item Price</h4>
           <p>Median: ${{ "%.2f"|format(current_stats.item.median or 0) }}</p>
@@ -122,6 +144,9 @@
       </div>
 
     </div>
-
+    <div class="stat">
+      <p>*Sell through rate calculation: (sold_total / current_total) * 100</p>
+      <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~50-80% is considered a decent rate</p>
+    </div>
   </body>
 </html>
