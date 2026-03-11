@@ -1,7 +1,7 @@
 
 # 🛍️ eBay Sold Listings Analyzer
 
-A full-stack pricing analysis tool for eBay resellers.
+A full-stack pricing analysis tool that helps eBay resellers determine realistic market prices using live listing data.
 
 This project uses:
 
@@ -138,28 +138,26 @@ cd ..
 
 ---
 
-## 🚀 Running
+## 🚀 Running the Application
 
-### 1️⃣ Run the scraper with search to update the json files
+### 1️⃣ Start the backend server
 
-```bash
-node scraper/index.js "query" sold
-node scraper/index.js "query" current
-```
-
----
-
-### 2️⃣ Start the backend server
-
-```bash
 uvicorn backend.app:app --reload --port 3000
-```
 
-Open in browser:
+### 2️⃣ Open the dashboard
 
-```
 http://localhost:3000
-```
+
+### 3️⃣ Search for an item
+
+Enter an eBay search query using the search bar.
+
+When a search is submitted, the backend automatically:
+
+• runs the Puppeteer scraper  
+• collects sold and current listings  
+• saves results to the `data/` folder  
+• reloads the dashboard with pricing analysis
 
 ---
 
@@ -186,7 +184,6 @@ http://localhost:3000
 
 ## 💡 Future Improvements
 
-* add search bar & run scraper from dashboard
 * color code higher priced items & lower priced items
 * Trimmed mean (remove outliers)
 * CSV export?
