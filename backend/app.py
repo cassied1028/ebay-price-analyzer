@@ -96,9 +96,9 @@ def homepage(request: Request, limit: int | None = Query(default=None, gt=0)):
     current_query = request.query_params.get("q", "")
 
     return templates.TemplateResponse(
+        request,
         "index.html",
         {
-            "request": request,
             "sold_listings": sold_cleaned,
             "sold_stats": sold_stats,
             "current_listings": current_cleaned,

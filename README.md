@@ -8,6 +8,7 @@ This project uses:
 * **Puppeteer (Node.js)** to scrape sold eBay listings
 * **FastAPI (Python)** to analyze pricing data
 * **Server-rendered HTML (Jinja templates)** to display results in a clean dashboard
+* **Pytest** to validate API routes, helper logic, and scraper output
 
 The app helps determine realistic pricing using:
 
@@ -25,6 +26,7 @@ The app helps determine realistic pricing using:
 project-root/
 ├── backend/
 │   ├── app.py                 # FastAPI backend
+│   ├── __init__.py            # Makes backend a Python package
 │   └── templates/
 │       └── index.html         # Server-rendered dashboard
 │
@@ -39,6 +41,12 @@ project-root/
 ├── data/
 │   ├── ebay_sold_results.json # Generated data (ignored in git)
 │   └── ebay_current_results.json # Generated data (ignored in git)
+│
+├── tests/                     # Regression tests
+│   ├── test_api.py
+│   ├── test_app_helpers.py
+│   └── test_data_format.py
+│
 │
 ├── screenshots/               # Puppeteer debug screenshots
 ├── venv/                      # Python virtual environment (ignored)
@@ -107,7 +115,7 @@ cd project-root
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install fastapi uvicorn jinja2 python-multipart
+pip install fastapi uvicorn jinja2 python-multipart pytest httpx
 ```
 
 ---
@@ -144,6 +152,22 @@ When a search is submitted, the backend automatically:
 • reloads the dashboard with pricing analysis
 
 ---
+## Running Tests
+This project includes regression tests for:
+
+• FastAPI API routes
+• helper functions used for pricing analysis
+• JSON scraper output structure
+
+Tests are located in the tests/ directory.
+
+### Run all tests:
+
+```bash
+PYTHONPATH=. python -m pytest -v
+```
+
+---
 
 ## 🛠 Technologies Used
 
@@ -152,6 +176,7 @@ When a search is submitted, the backend automatically:
 * Python 3
 * FastAPI
 * Jinja2
+* Pytest (regression testing)
 * HTML/CSS
 * JSON file storage
 
