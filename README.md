@@ -153,7 +153,7 @@ When a search is submitted, the backend automatically:
 • reloads the dashboard with pricing analysis
 
 ---
-## Running Tests
+## 🧪 Running Tests
 This project includes regression tests for:
 
 • FastAPI API routes
