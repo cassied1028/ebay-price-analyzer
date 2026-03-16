@@ -47,6 +47,7 @@ project-root/
 │   ├── test_app_helpers.py
 │   └── test_data_format.py
 │
+├── pytest.ini                 # Pytest configuration
 │
 ├── screenshots/               # Puppeteer debug screenshots
 ├── venv/                      # Python virtual environment (ignored)
@@ -164,8 +165,15 @@ Tests are located in the tests/ directory.
 ### Run all tests:
 
 ```bash
-PYTHONPATH=. python -m pytest -v
+python -m pytest -v
 ```
+
+The included pytest.ini file configures pytest so the project root is automatically added to the Python path, allowing imports like:
+
+```py
+from backend.app import summary
+```
+without needing to manually set PYTHONPATH.
 
 ---
 
